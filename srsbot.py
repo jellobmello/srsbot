@@ -85,8 +85,8 @@ class SrsBot:
 					for line in self.channels:
 						self.sendMessage("JOIN %s" % line)
 				break
-		
-	def register(self, nickname, username, realname):
+	
+	def register(self, nickname, username, realname): #Registers with the server
 		self.nickname = nickname
 		self.username = username
 		self.realname = realname
@@ -95,17 +95,23 @@ class SrsBot:
 		print "Logging in."
 		self.sendMessage("NICK %s" % self.nickname)
 		self.sendMessage("USER %s %s %s :%s" % (self.username, "srsbot", self.server, self.realname))
+	
+	def nick(self, nickname): #Changes nickname
+		self.nickname = nickname
 		
+		print "Changing nickname to %s." % nickname
+		self.sendMessage("NICK %s" % self.nickname)
+	
 	def join(self, channel):
 		print "Joining %s" % channel
 		self.sendMessage("JOIN %s" % channel)
 		self.channels.append(channel)
-		
+	
 	def part(self, channel):
 		print "Leaving %s" % channel
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
-		
+	
 	def recvMessages(self): #Waits until messages are recieved and get an array of messages
 		try:
 			self.readBuffer=self.readBuffer+self.socket.recv(1024) #get messages from the socket
@@ -125,7 +131,10 @@ class SrsBot:
 		self.tempMessages=[]
 		
 		for line in self.messages:
+			message=string.split(line, ":")
 			word=string.split(line)
+			if(word[1]=="433"):
+				self.nick(self.nickname+"_")
 			if(word[0]=="PING"):
 				self.sendMessage("PONG "+word[1])
 			
