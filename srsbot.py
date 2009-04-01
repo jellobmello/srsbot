@@ -144,7 +144,7 @@ class SrsBot:
 			return bytesSent
 	
 	def sendMessage(self, message): #Deprecated form of message TODO: remove in rc1
-		message(message)
+		self.message(message)
 	
 	def privmsg(self, message): #Sends a PRIVMSG
 		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
