@@ -134,14 +134,14 @@ class SrsBot:
 		return self.messages
 	
 	def message(self, message): #Sends a raw message to the server terminated with a newline
-	try:
-		bytesSent = self.socket.send(message+"\r\n") #send message over the socket
-	except socket.timeout as error:
-		self.connected = 0
-		self.reconnect()
-	else:
-		self.printVerbose(self.timestamp()+" ->| "+message)
-		return bytesSent
+		try:
+			bytesSent = self.socket.send(message+"\r\n") #send message over the socket
+		except socket.timeout as error:
+			self.connected = 0
+			self.reconnect()
+		else:
+			self.printVerbose(self.timestamp()+" ->| "+message)
+			return bytesSent
 	
 	def sendMessage(self, message): #Deprecated form of message TODO: remove in rc1
 		message(message)
