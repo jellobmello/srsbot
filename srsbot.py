@@ -130,7 +130,7 @@ class SrsBot:
 		self.messages=self.tempMessages
 		self.tempMessages=[]
 		
-		for line in self.messages:
+		for line in self.messages: #Eventually I shouldn't have to do this once some sort of listening function is created
 			message=string.split(line, ":")
 			word=string.split(line)
 			if(word[1]=="433"):
