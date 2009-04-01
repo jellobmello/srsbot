@@ -146,11 +146,11 @@ class SrsBot:
 	def sendMessage(self, message): #Deprecated form of message TODO: remove in rc1
 		self.message(message)
 	
-	def privmsg(self, message): #Sends a PRIVMSG
+	def privmsg(self,recipient, message): #Sends a PRIVMSG
 		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
 	
 	def sendPrivmsg(self, recipient, message): #Deprecated form of privmsg TODO: remove in rc1
-		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
+		self.privmsg(recipient, message)
 	
 	def printVerbose(self, message): #Prints a message if the self.verbose variable has been turned on
 		if self.verbose==1: print message
