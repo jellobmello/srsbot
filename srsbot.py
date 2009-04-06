@@ -120,6 +120,11 @@ class SrsBot:
 			self.connected = 0
 			self.reconnect()
 			return self.messages
+		except socket.error as error:
+			print str(error)+"error."
+			self.connected = 0
+			self.reconnect()
+			return self.messages
 		
 		temp=string.split(self.readBuffer, "\r\n") #create an array of messages
 		self.readBuffer=temp.pop() #clean up readBuffer for the next time recvMessages is called
@@ -146,8 +151,14 @@ class SrsBot:
 		try:
 			bytesSent = self.socket.send(message+"\r\n") #send message over the socket
 		except socket.timeout as error:
+			print "Timed out (%s)." % self.timeout
 			self.connected = 0
 			self.reconnect()
+		except socket.error as error:
+			print str(error)+"error."
+			self.connected = 0
+			self.reconnect()
+			return self.messages
 		else:
 			self.printVerbose(self.timestamp()+" ->| "+message)
 			return bytesSent
