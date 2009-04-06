@@ -121,7 +121,7 @@ class SrsBot:
 			self.reconnect()
 			return self.messages
 		except socket.error as error:
-			print str(error)+"error."
+			print str(error)
 			self.connected = 0
 			self.reconnect()
 			return self.messages
@@ -155,7 +155,7 @@ class SrsBot:
 			self.connected = 0
 			self.reconnect()
 		except socket.error as error:
-			print str(error)+"error."
+			print str(error)
 			self.connected = 0
 			self.reconnect()
 			return self.messages
