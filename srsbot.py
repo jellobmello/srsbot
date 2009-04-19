@@ -61,7 +61,7 @@ class SrsBot:
 			self.connected = 1
 			print "Connected."
 
-	def disconnect(self, quitMessage="SrsBot Beta 5"):
+	def disconnect(self, quitMessage="SrsBot Beta 7"):
 		print "Disconnecting."
 		self.sendMessage("QUIT :%s \r\n" % quitMessage)
 		self.socket.close()
@@ -73,7 +73,7 @@ class SrsBot:
 		attempts = 1
 		connectionAttemptTime = 0
 		while (attempts < maxattempts):
-			if(time.time() - connectionAttemptTime > interval):
+			if(time.time() - connectionAttemptTime > interval): #Don't wanna blow through all the reconnects in one go
 				print "(%s of %s)" % (attempts, maxattempts)
 				self.connect(self.server, self.port, reconnect=1)
 				connectionAttemptTime = time.time()
