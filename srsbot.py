@@ -127,7 +127,7 @@ class SrsBot:
 			return self.messages
 		
 		temp=string.split(self.readBuffer, "\r\n") #create an array of messages
-		self.readBuffer=temp.pop() #clean up readBuffer for the next time recvMessages is called
+		self.readBuffer=temp.pop() #If all messages are completed with \r\n, this removes the blank index. If the last message is incomplete, this moves it to readBuffer to be completed on the next socket.recv()
 		
 		for line in temp:
 			self.tempMessages.append(string.rstrip(line)) #clean up whitespace
