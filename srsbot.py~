@@ -168,7 +168,7 @@ class SrsBot:
 		
 		return self.messageList
 	
-	def recvMessages(self): #Deprecated form of rawMessages() TODO: remove in rc1
+	def recvMessages(self): #Deprecated form of messages() TODO: remove in rc1
 		return self.rawMessages()
 	
 	def message(self, message): #Sends a raw message to the server terminated with a newline

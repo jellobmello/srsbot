@@ -32,21 +32,18 @@ channel = "#srsbot"
 bot.join(channel)
 
 while bot.connected:
-	
-	for line in bot.rawMessages(): #Iterate through received messages
-		word=line.split()
-		
-		if(re.search("^:"+nickname+"!", line) and word[1]=="JOIN"): #Use a regular expression to see if you've joined the channel
+	for message in bot.messages(): #Iterate through received messages
+		if(message["sender"]==nickname and message["type"]=="JOIN"): #See if you've joined a channel
 			bot.privmsg(channel, "EXAMPLEBOT IS IN THE HIZZOUSE") #Send a private message to the channel
 		
-		if(re.search("hey examplebot", line, re.IGNORECASE)):
+		if(re.search("hey examplebot", message["body"], re.IGNORECASE)): #Use a regular expression to search the message body
 			bot.privmsg(channel, "hey")
 		
-		if(re.search("what it do, my dawg\?", line, re.IGNORECASE)):
+		if(re.search("what it do, dawg\?", message["body"], re.IGNORECASE)):
 			bot.privmsg(channel, "nothin much, man")
 			bot.privmsg(channel, "nothin much")
 		
-		if(re.search("cool beans", line, re.IGNORECASE)):
+		if(re.search("cool beans", message["body"], re.IGNORECASE)):
 			bot.privmsg(channel, "so cool they fresh, nawmeen?")
 		
 	if(time.time() - connectTime >= 30): #Disconnect after 30 seconds
