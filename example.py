@@ -33,7 +33,7 @@ bot.join(channel)
 
 while bot.connected:
 	
-	for line in bot.messages(): #Iterate through received messages
+	for line in bot.rawMessages(): #Iterate through received messages
 		word=line.split()
 		
 		if(re.search("^:"+nickname+"!", line) and word[1]=="JOIN"): #Use a regular expression to see if you've joined the channel
