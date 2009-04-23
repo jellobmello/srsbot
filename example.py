@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with SrsBot.  If not, see <http://www.gnu.org/licenses/>.'''
 
 import srsbot
-import string
 import time
 import re
 
@@ -26,7 +25,8 @@ bot.verbose = 1 #See every line, switch to 0 to turn it off
 bot.connect("irc.rizon.net", 6667) #Server, port
 connectTime = time.time()
 
-bot.register("ExampleBot", "examplebot", "Example T. Bot") #Nick, username, real name
+nickname="ExampleBot"
+bot.register(nickname, "examplebot", "Example T. Bot") #Nick, username, real name
 
 channel = "#srsbot"
 bot.join(channel)
@@ -34,15 +34,22 @@ bot.join(channel)
 while bot.connected:
 	
 	for line in bot.messages(): #Iterate through received messages
-		word=string.split(line)
+		word=line.split()
 		
-		if(word[1] == "353"):
+		if(re.search("^:"+nickname+"!", line) and word[1]=="JOIN"): #Use a regular expression to see if you've joined the channel
 			bot.privmsg(channel, "EXAMPLEBOT IS IN THE HIZZOUSE") #Send a private message to the channel
 		
-		if(re.search("hey examplebot", line, re.IGNORECASE)): #use a regular expression to search the message
+		if(re.search("hey examplebot", line, re.IGNORECASE)):
 			bot.privmsg(channel, "hey")
-	
-	if(time.time() - connectTime >= 120): #connected two minutes ago
+		
+		if(re.search("what it do, my dawg\?", line, re.IGNORECASE)):
+			bot.privmsg(channel, "nothin much, man")
+			bot.privmsg(channel, "nothin much")
+		
+		if(re.search("cool beans", line, re.IGNORECASE)):
+			bot.privmsg(channel, "so cool they fresh, nawmeen?")
+		
+	if(time.time() - connectTime >= 30): #Disconnect after 30 seconds
 		bot.privmsg(channel, "g2g. keep it fresh")
 		bot.part(channel)
 		bot.disconnect()
