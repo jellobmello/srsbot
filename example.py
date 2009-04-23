@@ -32,9 +32,8 @@ channel = "#srsbot"
 bot.join(channel)
 
 while bot.connected:
-	messages = bot.recvMessages() #Wait until messages are recieved and put them into the messages array
 	
-	for line in messages:
+	for line in bot.messages(): #Iterate through received messages
 		word=string.split(line)
 		
 		if(word[1] == "353"):

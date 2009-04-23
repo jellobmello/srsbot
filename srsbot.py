@@ -23,7 +23,7 @@ import time
 class SrsBot:
 	readBuffer=""
 	tempMessages=[]
-	messages=[]
+	messageList=[]
 	channels=[]
 	notifications=[]
 	connected=0
@@ -112,32 +112,31 @@ class SrsBot:
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
 	
-	def recvMessages(self): #Waits until messages are recieved and get an array of messages
+	def messages(self): #Waits until messages are recieved then returns a list of messages
 		try:
-			self.readBuffer=self.readBuffer+self.socket.recv(1024) #get messages from the socket
+			self.readBuffer=self.readBuffer+self.socket.recv(1024) #Get messages from the socket
 		except socket.timeout as error:
 			print "Timed out (%s)." % self.timeout
 			self.connected = 0
 			self.reconnect()
-			return self.messages
+			return self.messageList
 		except socket.error as error:
 			print str(error)
 			self.connected = 0
 			self.reconnect()
-			return self.messages
+			return self.messageList
 		
-		temp=string.split(self.readBuffer, "\r\n") #create an array of messages
-		self.readBuffer=temp.pop() #If all messages are completed with \r\n, this removes the blank index. If the last message is incomplete, this moves it to readBuffer to be completed on the next socket.recv()
+		tempMessages=self.readBuffer.split("\r\n") #Create a list of messages
+
+		#If all messages are completed with \r\n, this removes the blank item. If the last message is incomplete, this moves back it to readBuffer to be completed on the next socket.recv(). tempMessages is necessary for self.messageList to always contain complete messages.
+		self.readBuffer=tempMessages.pop()
 		
-		for line in temp:
-			self.tempMessages.append(string.rstrip(line)) #clean up whitespace
+		self.messageList=tempMessages
 		
-		self.messages=self.tempMessages
-		self.tempMessages=[]
-		
-		for line in self.messages: #Eventually I shouldn't have to do this once some sort of listening function is created
+		for line in self.messageList: #Eventually I shouldn't have to do this once some sort of listening method is created
 			message=string.split(line, ":")
 			word=string.split(line)
+			
 			if(word[1]=="433"):
 				self.nick(self.nickname+"_")
 			if(word[0]=="PING"):
@@ -145,7 +144,10 @@ class SrsBot:
 			
 			self.printVerbose(self.timestamp()+" |<- "+line)
 		
-		return self.messages
+		return self.messageList
+	
+	def recvMessages(self): #Deprecated form of messages() TODO: remove in rc1
+		return self.messages()
 	
 	def message(self, message): #Sends a raw message to the server terminated with a newline
 		try:
@@ -158,18 +160,18 @@ class SrsBot:
 			print str(error)
 			self.connected = 0
 			self.reconnect()
-			return self.messages
+			return self.messageList
 		else:
 			self.printVerbose(self.timestamp()+" ->| "+message)
 			return bytesSent
 	
-	def sendMessage(self, message): #Deprecated form of message TODO: remove in rc1
+	def sendMessage(self, message): #Deprecated form of message() TODO: remove in rc1
 		self.message(message)
 	
 	def privmsg(self,recipient, message): #Sends a PRIVMSG
 		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
 	
-	def sendPrivmsg(self, recipient, message): #Deprecated form of privmsg TODO: remove in rc1
+	def sendPrivmsg(self, recipient, message): #Deprecated form of privmsg() TODO: remove in rc1
 		self.privmsg(recipient, message)
 	
 	def printVerbose(self, message): #Prints a message if the self.verbose variable has been turned on
