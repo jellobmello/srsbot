@@ -112,7 +112,7 @@ class SrsBot:
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
 	
-	def messages(self): #Waits until messages are recieved then returns a list of messages
+	def rawMessages(self): #Waits until messages are recieved then returns a list of messages
 		try:
 			self.readBuffer=self.readBuffer+self.socket.recv(1024) #Get messages from the socket
 		except socket.timeout as error:
@@ -147,7 +147,7 @@ class SrsBot:
 		return self.messageList
 	
 	def recvMessages(self): #Deprecated form of messages() TODO: remove in rc1
-		return self.messages()
+		return self.rawMessages()
 	
 	def message(self, message): #Sends a raw message to the server terminated with a newline
 		try:
