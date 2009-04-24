@@ -62,7 +62,7 @@ class SrsBot:
 			self.connected = 1
 			print "Connected."
 
-	def disconnect(self, quitMessage="SrsBot Beta 7"):
+	def disconnect(self, quitMessage="SrsBot Beta 8"):
 		print "Disconnecting."
 		self.sendMessage("QUIT :%s \r\n" % quitMessage)
 		self.socket.close()
@@ -112,6 +112,7 @@ class SrsBot:
 		print "Leaving %s" % channel
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
+	
 	def messages(self): #High-level method that returns items of dictionaries containing messages and information about them
 		self.formattedMessages=[] #Clean it up so the messages from last time aren't still there
 		
@@ -130,7 +131,7 @@ class SrsBot:
 			else:
 				recipient=""
 			
-			self.formattedMessages.append({"body" : body, "senderHost" : senderHost, "sender" : sender, "recipient" : recipient, "type" : msgtype})
+			self.formattedMessages.append({"body" : body, "senderHost" : senderHost, "sender" : sender, "recipient" : recipient, "type" : msgtype, "raw" : message})
 		
 		return self.formattedMessages
 	
