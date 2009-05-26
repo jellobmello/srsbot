@@ -19,17 +19,18 @@ import sys
 import socket
 import string
 import time
+import re
 
 class SrsBot:
-	readBuffer=""
-	tempMessages=[]
-	messageList=[]
-	formattedMessages=[]
-	channels=[]
-	notifications=[]
-	connected=0
-	registered=0
-	verbose=0
+	def __init__(self):
+		self.readBuffer=""
+		self.tempMessages=[]
+		self.messageList=[]
+		self.formattedMessages=[]
+		self.channels=[]
+		self.connected=0
+		self.registered=0
+		self.verbose=0
 	
 	def connect(self, server, port, timeout=240, reconnect=0):
 		self.server = server
@@ -156,12 +157,14 @@ class SrsBot:
 		
 		self.messageList=tempMessages
 		
-		for line in self.messageList: #Eventually I shouldn't have to do this once some sort of listening method is created
+		for line in self.messageList:
+			
 			message=string.split(line, ":")
 			word=string.split(line)
 			
 			if(word[1]=="433"):
 				self.nick(self.nickname+"_")
+				
 			if(word[0]=="PING"):
 				self.sendMessage("PONG "+word[1])
 			
