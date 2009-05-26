@@ -157,6 +157,7 @@ class SrsBot:
 		self.messageList=tempMessages
 		
 		for line in self.messageList:
+			self.printVerbose(self.timestamp()+" |<- "+line)
 			
 			message=string.split(line, ":")
 			word=string.split(line)
@@ -175,8 +176,6 @@ class SrsBot:
 				
 			if(word[0]=="PING"):
 				self.sendMessage("PONG "+word[1])
-			
-			self.printVerbose(self.timestamp()+" |<- "+line)
 		
 		return self.messageList
 	

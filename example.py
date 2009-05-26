@@ -33,7 +33,7 @@ bot.join(channel)
 
 while bot.connected:
 	for message in bot.messages(): #Iterate through received messages
-		if(message["sender"]==nickname and message["type"]=="JOIN"): #See if you've joined a channel
+		if(message["sender"]==bot.nickname and message["type"]=="JOIN"): #See if you've joined a channel
 			bot.privmsg(channel, "EXAMPLEBOT IS IN THE HIZZOUSE") #Send a private message to the channel
 		
 		if(re.search("hey examplebot", message["body"], re.IGNORECASE)): #Use a regular expression to search the message body
