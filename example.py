@@ -25,8 +25,7 @@ bot.verbose = 1 #See every line, switch to 0 to turn it off
 bot.connect("irc.rizon.net", 6667) #Server, port
 connectTime = time.time()
 
-nickname="ExampleBot"
-bot.register(nickname, "examplebot", "Example T. Bot") #Nick, username, real name
+bot.register("ExampleBot", "examplebot", "Example T. Bot") #Nick, username, real name
 
 channel = "#srsbot"
 bot.join(channel)
