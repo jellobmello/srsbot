@@ -28,6 +28,7 @@ class SrsBot:
 		self.messageList=[]
 		self.formattedMessages=[]
 		self.channels=[]
+		self.joinQueue=[]
 		self.connected=0
 		self.registered=0
 		self.verbose=0
@@ -37,12 +38,12 @@ class SrsBot:
 		self.port = port
 		self.timeout = timeout
 		
-		self.socket=socket.socket()
-		self.socket.settimeout(timeout) #timeout after four minutes
+		self.sock=socket.socket()
+		self.sock.settimeout(timeout) #timeout after four minutes
 		
 		print "Connecting...",
 		try:
-			self.socket.connect((self.server, self.port))
+			self.sock.connect((self.server, self.port))
 		except socket.gaierror as error:
 			print "Connection failed. %s." % error
 			if(reconnect==0): #Check to see if this is an attempt by reconnect() so we don't end up recursing
@@ -66,11 +67,11 @@ class SrsBot:
 	def disconnect(self, quitMessage="SrsBot Beta 8"):
 		print "Disconnecting."
 		self.sendMessage("QUIT :%s \r\n" % quitMessage)
-		self.socket.close()
+		self.sock.close()
 		self.connected = 0
 	
 	def reconnect(self, maxattempts=100, interval=10):
-		self.socket.close()
+		self.sock.close()
 		print "Reconnecting."
 		attempts = 1
 		connectionAttemptTime = 0
@@ -92,11 +93,10 @@ class SrsBot:
 		self.nickname = nickname
 		self.username = username
 		self.realname = realname
-		self.registered = 1
 		
 		print "Logging in."
 		self.sendMessage("NICK %s" % self.nickname)
-		self.sendMessage("USER %s %s %s :%s" % (self.username, "srsbot", self.server, self.realname))
+		self.sendMessage("USER %s %s %s :%s" % (self.username, socket.gethostname(), self.server, self.realname))
 	
 	def nick(self, nickname): #Changes nickname
 		self.nickname = nickname
@@ -106,8 +106,7 @@ class SrsBot:
 	
 	def join(self, channel):
 		print "Joining %s" % channel
-		self.sendMessage("JOIN %s" % channel)
-		self.channels.append(channel)
+		self.joinQueue.append(channel)
 	
 	def part(self, channel):
 		print "Leaving %s" % channel
@@ -138,7 +137,7 @@ class SrsBot:
 	
 	def rawMessages(self): #Waits until messages are recieved then returns a list of messages
 		try:
-			self.readBuffer=self.readBuffer+self.socket.recv(1024) #Get messages from the socket
+			self.readBuffer=self.readBuffer+self.sock.recv(1024) #Get messages from the socket
 		except socket.timeout as error:
 			print "Timed out (%s)." % self.timeout
 			self.connected = 0
@@ -162,6 +161,15 @@ class SrsBot:
 			message=string.split(line, ":")
 			word=string.split(line)
 			
+			if(word[1]=="001"):
+				self.registered=1
+			
+			if(self.registered):
+				for channel in self.joinQueue: #join all the channels in the join queue
+					self.sendMessage("JOIN "+channel)
+					self.channels.append(channel)
+					self.joinQueue.remove(channel)
+			
 			if(word[1]=="433"):
 				self.nick(self.nickname+"_")
 				
@@ -177,7 +185,7 @@ class SrsBot:
 	
 	def message(self, message): #Sends a raw message to the server terminated with a newline
 		try:
-			bytesSent = self.socket.send(message+"\r\n") #send message over the socket
+			bytesSent = self.sock.send(message+"\r\n") #send message over the socket
 		except socket.timeout as error:
 			print "Timed out (%s)." % self.timeout
 			self.connected = 0
