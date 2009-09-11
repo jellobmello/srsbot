@@ -44,16 +44,13 @@ class SrsBot:
 		print "Connecting...",
 		try:
 			self.sock.connect((self.server, self.port))
-		except socket.gaierror as error:
-			print "Connection failed. %s." % error
+		except socket.gaierror:
 			if(reconnect==0): #Check to see if this is an attempt by reconnect() so we don't end up recursing
 				self.reconnect()
-		except socket.herror as error:
-			print "Connection failed. %s." % error
+		except socket.herror:
 			if(reconnect==0):
 				self.reconnect()
-		except socket.error as error:
-			print "Connection failed. %s." % error
+		except socket.error:
 			if(reconnect==0):
 				self.reconnect()
 		except socket.timeout:
@@ -138,13 +135,12 @@ class SrsBot:
 	def rawMessages(self): #Waits until messages are recieved then returns a list of messages
 		try:
 			self.readBuffer=self.readBuffer+self.sock.recv(1024) #Get messages from the socket
-		except socket.timeout as error:
+		except socket.timeout:
 			print "Timed out (%s)." % self.timeout
 			self.connected = 0
 			self.reconnect()
 			return self.messageList
-		except socket.error as error:
-			print str(error)
+		except socket.error:
 			self.connected = 0
 			self.reconnect()
 			return self.messageList
@@ -185,12 +181,11 @@ class SrsBot:
 	def message(self, message): #Sends a raw message to the server terminated with a newline
 		try:
 			bytesSent = self.sock.send(message+"\r\n") #send message over the socket
-		except socket.timeout as error:
+		except socket.timeout:
 			print "Timed out (%s)." % self.timeout
 			self.connected = 0
 			self.reconnect()
-		except socket.error as error:
-			print str(error)
+		except socket.error:
 			self.connected = 0
 			self.reconnect()
 			return self.messageList
