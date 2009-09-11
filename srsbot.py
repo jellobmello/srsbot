@@ -83,7 +83,7 @@ class SrsBot:
 			self.connected = 1
 			print "Connected."
 
-	def disconnect(self, quitMessage="SrsBot Beta 8"):
+	def disconnect(self, quitMessage="SrsBot RC 1"):
 		print "Disconnecting."
 		self.sendMessage("QUIT :%s \r\n" % quitMessage)
 		self.sock.close()
