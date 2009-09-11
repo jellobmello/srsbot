@@ -32,17 +32,17 @@ bot.join(channel)
 
 while bot.connected:
 	for message in bot.messages(): #Iterate through received messages
-		if(message["sender"]==bot.nickname and message["type"]=="JOIN"): #See if you've joined a channel
+		if(message.sender==bot.nickname and message.type=="JOIN"): #See if you've joined a channel
 			bot.privmsg(channel, "EXAMPLEBOT IS IN THE HIZZOUSE") #Send a private message to the channel
 		
-		if(re.search("hey examplebot", message["body"], re.IGNORECASE)): #Use a regular expression to search the message body
+		if(re.search("hey examplebot", message.body, re.IGNORECASE)): #Use a regular expression to search the message body
 			bot.privmsg(channel, "hey")
 		
-		if(re.search("what it do, dawg\?", message["body"], re.IGNORECASE)):
+		if(re.search("what it do, dawg\?", message.body, re.IGNORECASE)):
 			bot.privmsg(channel, "nothin much, man")
 			bot.privmsg(channel, "nothin much")
 		
-		if(re.search("cool beans", message["body"], re.IGNORECASE)):
+		if(re.search("cool beans", message.body, re.IGNORECASE)):
 			bot.privmsg(channel, "so cool they fresh, nawmeen?")
 		
 	if(time.time() - connectTime >= 30): #Disconnect after 30 seconds

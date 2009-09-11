@@ -21,6 +21,28 @@ import string
 import time
 import re
 
+class message:
+	'''A message.
+	This class exposes the following properties:
+		message.body
+		message.sender
+		message.senderHost
+		message.recipient
+		message.type
+		message.raw
+	'''
+	
+	def __init__(self, body="", sender="", senderHost="", recipient="", type="", raw=""):
+		self.body = body
+		self.sender = sender
+		self.senderHost = senderHost
+		self.recipient = recipient
+		self.type = type
+		self.raw = raw
+	
+	def __str__(self):
+		return self.raw
+
 class SrsBot:
 	def __init__(self):
 		self.readBuffer=""
@@ -110,25 +132,25 @@ class SrsBot:
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
 	
-	def messages(self): #High-level method that returns items of dictionaries containing messages and information about them
+	def messages(self): #High-level method that returns a list of message objects
 		self.formattedMessages=[] #Clean it up so the messages from last time aren't still there
 		
-		for message in self.rawMessages():
+		for rawMessage in self.rawMessages():
 			try:
-				body=message.split(":", 2)[2]
+				body=rawMessage.split(":", 2)[2]
 			except IndexError:
 				body="" #Some message
 			
-			senderHost=message.split()[1]
-			sender=message.split(":")[1].split("!")[0]
-			msgtype=message.split()[1]
+			senderHost=rawMessage.split()[1]
+			sender=rawMessage.split(":")[1].split("!")[0]
+			msgtype=rawMessage.split()[1]
 			
 			if(msgtype=="PRIVMSG"):
-				recipient=message.split()[2]
+				recipient=rawMessage.split()[2]
 			else:
 				recipient=""
 			
-			self.formattedMessages.append({"body" : body, "senderHost" : senderHost, "sender" : sender, "recipient" : recipient, "type" : msgtype, "raw" : message})
+			self.formattedMessages.append(message(body=body, sender=sender, senderHost=senderHost, recipient=recipient, type=msgtype, raw=message))
 		
 		return self.formattedMessages
 	
