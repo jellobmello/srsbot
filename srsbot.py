@@ -63,7 +63,7 @@ class SrsBot:
 		self.sock=socket.socket()
 		self.sock.settimeout(timeout) #timeout after four minutes
 		
-		print "Connecting...",
+		self.printVerbose("Connecting...")
 		try:
 			self.sock.connect((self.server, self.port))
 		except socket.gaierror:
@@ -76,27 +76,27 @@ class SrsBot:
 			if(reconnect==0):
 				self.reconnect()
 		except socket.timeout:
-			print "Connection failed. Timed out."
+			self.printVerbose("Connection failed. Timed out.")
 			if(reconnect==0):
 				self.reconnect()
 		else:
 			self.connected = 1
-			print "Connected."
+			self.printVerbose("Connected.")
 
 	def disconnect(self, quitMessage="SrsBot RC 1"):
-		print "Disconnecting."
+		self.printVerbose("Disconnecting.")
 		self.sendMessage("QUIT :%s \r\n" % quitMessage)
 		self.sock.close()
 		self.connected = 0
 	
 	def reconnect(self, maxattempts=100, interval=10):
 		self.sock.close()
-		print "Reconnecting."
+		self.printVerbose("Reconnecting.")
 		attempts = 1
 		connectionAttemptTime = 0
 		while (attempts < maxattempts):
 			if(time.time() - connectionAttemptTime > interval): #Don't wanna blow through all the reconnects in one go
-				print "(%s of %s)" % (attempts, maxattempts)
+				self.printVerbose("(%s of %s)" % (attempts, maxattempts))
 				self.connect(self.server, self.port, reconnect=1)
 				connectionAttemptTime = time.time()
 				attempts = attempts+1
@@ -113,22 +113,22 @@ class SrsBot:
 		self.username = username
 		self.realname = realname
 		
-		print "Logging in."
+		self.printVerbose("Logging in.")
 		self.sendMessage("NICK %s" % self.nickname)
 		self.sendMessage("USER %s %s %s :%s" % (self.username, socket.gethostname(), self.server, self.realname))
 	
 	def nick(self, nickname): #Changes nickname
 		self.nickname = nickname
 		
-		print "Changing nickname to %s." % nickname
+		self.printVerbose("Changing nickname to %s." % nickname)
 		self.sendMessage("NICK %s" % self.nickname)
 	
 	def join(self, channel):
-		print "Joining %s" % channel
+		self.printVerbose("Joining %s" % channel)
 		self.joinQueue.append(channel)
 	
 	def part(self, channel):
-		print "Leaving %s" % channel
+		self.printVerbose("Leaving %s" % channel)
 		self.sendMessage("PART %s" % channel)
 		self.channels.remove(channel)
 	
@@ -158,7 +158,7 @@ class SrsBot:
 		try:
 			self.readBuffer=self.readBuffer+self.sock.recv(1024) #Get messages from the socket
 		except socket.timeout:
-			print "Timed out (%s)." % self.timeout
+			self.printVerbose("Timed out (%s)." % self.timeout)
 			self.connected = 0
 			self.reconnect()
 			return self.messageList
@@ -204,7 +204,7 @@ class SrsBot:
 		try:
 			bytesSent = self.sock.send(message+"\r\n") #send message over the socket
 		except socket.timeout:
-			print "Timed out (%s)." % self.timeout
+			self.printVerbose("Timed out (%s)." % self.timeout)
 			self.connected = 0
 			self.reconnect()
 		except socket.error:
