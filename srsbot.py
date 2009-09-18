@@ -197,9 +197,6 @@ class SrsBot:
 		
 		return self.messageList
 	
-	def recvMessages(self): #Deprecated form of rawMessages() TODO: remove in rc1
-		return self.rawMessages()
-	
 	def message(self, message): #Sends a raw message to the server terminated with a newline
 		try:
 			bytesSent = self.sock.send(message+"\r\n") #send message over the socket
@@ -215,14 +212,8 @@ class SrsBot:
 			self.printVerbose(self.timestamp()+" ->| "+message)
 			return bytesSent
 	
-	def sendMessage(self, message): #Deprecated form of message() TODO: remove in rc1
-		self.message(message)
-	
 	def privmsg(self,recipient, message): #Sends a PRIVMSG
 		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
-	
-	def sendPrivmsg(self, recipient, message): #Deprecated form of privmsg() TODO: remove in rc1
-		self.privmsg(recipient, message)
 	
 	def printVerbose(self, message): #Prints a message if the self.verbose variable has been turned on
 		if self.verbose==1: print message
