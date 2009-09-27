@@ -85,7 +85,7 @@ class SrsBot:
 
 	def disconnect(self, quitMessage="SrsBot RC 1"):
 		self.printVerbose("Disconnecting.")
-		self.sendMessage("QUIT :%s \r\n" % quitMessage)
+		self.message("QUIT :%s \r\n" % quitMessage)
 		self.sock.close()
 		self.connected = 0
 	
@@ -105,7 +105,7 @@ class SrsBot:
 					self.register(self.nickname, self.username, self.realname)
 				if (self.channels):
 					for line in self.channels:
-						self.sendMessage("JOIN %s" % line)
+						self.message("JOIN %s" % line)
 				break
 	
 	def register(self, nickname, username, realname): #Registers with the server
@@ -114,14 +114,14 @@ class SrsBot:
 		self.realname = realname
 		
 		self.printVerbose("Logging in.")
-		self.sendMessage("NICK %s" % self.nickname)
-		self.sendMessage("USER %s %s %s :%s" % (self.username, socket.gethostname(), self.server, self.realname))
+		self.message("NICK %s" % self.nickname)
+		self.message("USER %s %s %s :%s" % (self.username, socket.gethostname(), self.server, self.realname))
 	
 	def nick(self, nickname): #Changes nickname
 		self.nickname = nickname
 		
 		self.printVerbose("Changing nickname to %s." % nickname)
-		self.sendMessage("NICK %s" % self.nickname)
+		self.message("NICK %s" % self.nickname)
 	
 	def join(self, channel):
 		self.printVerbose("Joining %s" % channel)
@@ -129,7 +129,7 @@ class SrsBot:
 	
 	def part(self, channel):
 		self.printVerbose("Leaving %s" % channel)
-		self.sendMessage("PART %s" % channel)
+		self.message("PART %s" % channel)
 		self.channels.remove(channel)
 	
 	def messages(self): #High-level method that returns a list of message objects
@@ -185,7 +185,7 @@ class SrsBot:
 			
 			if(self.registered):
 				for channel in self.joinQueue: #join all the channels in the join queue
-					self.sendMessage("JOIN "+channel)
+					self.message("JOIN "+channel)
 					self.channels.append(channel)
 					self.joinQueue.remove(channel)
 			
@@ -193,7 +193,7 @@ class SrsBot:
 				self.nick(self.nickname+"_")
 				
 			if(word[0]=="PING"):
-				self.sendMessage("PONG "+word[1])
+				self.message("PONG "+word[1])
 		
 		return self.messageList
 	
@@ -213,7 +213,7 @@ class SrsBot:
 			return bytesSent
 	
 	def privmsg(self,recipient, message): #Sends a PRIVMSG
-		self.sendMessage("PRIVMSG %s :%s" % (recipient, message))
+		self.message("PRIVMSG %s :%s" % (recipient, message))
 	
 	def printVerbose(self, message): #Prints a message if the self.verbose variable has been turned on
 		if self.verbose==1: print message
