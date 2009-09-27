@@ -150,7 +150,7 @@ class SrsBot:
 			else:
 				recipient=""
 			
-			self.formattedMessages.append(message(body=body, sender=sender, senderHost=senderHost, recipient=recipient, type=msgtype, raw=message))
+			self.formattedMessages.append(message(body=body, sender=sender, senderHost=senderHost, recipient=recipient, type=msgtype, raw=rawMessage))
 		
 		return self.formattedMessages
 	
