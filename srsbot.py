@@ -158,12 +158,8 @@ class SrsBot:
 		try:
 			self.readBuffer=self.readBuffer+self.sock.recv(1024) #Get messages from the socket
 		except socket.timeout:
-			self.printVerbose("Timed out (%s)." % self.timeout)
-			self.connected = 0
-			self.reconnect()
-			return self.messageList
+			return []
 		except socket.error:
-			self.connected = 0
 			self.reconnect()
 			return self.messageList
 		
