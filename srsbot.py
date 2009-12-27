@@ -90,7 +90,7 @@ class SrsBot:
 		self.connected = 0
 	
 	def reconnect(self, maxattempts=100, interval=10):
-		self.sock.close()
+		self.disconnect()
 		self.printVerbose("Reconnecting.")
 		attempts = 1
 		connectionAttemptTime = 0
